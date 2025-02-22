@@ -8,10 +8,16 @@ app = flask.Flask(__name__)
 @app.route("/volume", methods=["GET", "POST"])
 def volume_api():
     if flask.request.method == "GET":
-        return flask.jsonify({"volume": volume_funcs.get_master_volume()}), 200
+        try:
+            return flask.jsonify({"volume": volume_funcs.get_master_volume()}), 200
+        except Exception as e:
+            return flask.jsonify({"error": str(e)}), 500
     elif flask.request.method == "POST":
-        volume_funcs.set_master_volume(flask.request.json["volume"]) # type: ignore
-        return flask.jsonify({"volume": volume_funcs.get_master_volume()}), 200
+        try:
+            volume_funcs.set_master_volume(flask.request.json["volume"]) # type: ignore
+            return flask.jsonify({"volume": volume_funcs.get_master_volume()}), 200
+        except Exception as e:
+            return flask.jsonify({"error": str(e)}), 500
     
     return flask.jsonify({"error": "Invalid request"}), 400
 
