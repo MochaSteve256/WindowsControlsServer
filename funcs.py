@@ -1,10 +1,10 @@
 from __future__ import print_function
-from ctypes import cast, POINTER
+from ctypes import cast, POINTER, windll
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
 import os
-import keyboard
+#import keyboard as kb
 
 # ---
 # Volume
@@ -47,14 +47,26 @@ def get_master_volume():
 # Music Controls
 # ---
 
+# Windows API function
+SendInput = windll.user32.keybd_event
+
+# Virtual key codes for media keys
+VK_MEDIA_PLAY_PAUSE = 0xB3
+VK_MEDIA_NEXT_TRACK = 0xB0
+VK_MEDIA_PREV_TRACK = 0xB1
+
+
 def play_pause_music():
-    keyboard.send("play/pause media")
+    #kb.send("play/pause media")
+    SendInput(VK_MEDIA_PLAY_PAUSE, 0, 0, 0)
 
 def next_track():
-    keyboard.send("next track")
+    # kb.send("next track")
+    SendInput(VK_MEDIA_NEXT_TRACK, 0, 0, 0)
 
 def previous_track():
-    keyboard.send("previous track")
+    # kb.send("previous track")
+    SendInput(VK_MEDIA_PREV_TRACK, 0, 0, 0)
 
 
 # ---

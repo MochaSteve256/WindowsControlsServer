@@ -23,6 +23,8 @@ def volume_api():
 
 @app.route("/music", methods=["POST"])
 def music_api():
+    if flask.request.method != "POST" or "action" not in flask.request.json: # type: ignore
+        return flask.jsonify({"error": "Invalid request"}), 400
     action = flask.request.json["action"] # type: ignore
     if action == "play_pause":
         funcs.play_pause_music()
