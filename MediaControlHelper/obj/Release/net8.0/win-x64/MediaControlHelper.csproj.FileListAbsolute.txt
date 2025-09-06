@@ -1,0 +1,5 @@
+C:\Users\Adrian\Desktop\Code\WindowsControlsServer\MediaControlHelper\obj\Release\net8.0\win-x64\MediaControlHelper.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Adrian\Desktop\Code\WindowsControlsServer\MediaControlHelper\obj\Release\net8.0\win-x64\MediaControlHelper.AssemblyInfoInputs.cache
+C:\Users\Adrian\Desktop\Code\WindowsControlsServer\MediaControlHelper\obj\Release\net8.0\win-x64\MediaControlHelper.AssemblyInfo.cs
+C:\Users\Adrian\Desktop\Code\WindowsControlsServer\MediaControlHelper\obj\Release\net8.0\win-x64\MediaControlHelper.csproj.CoreCompileInputs.cache
+C:\Users\Adrian\Desktop\Code\WindowsControlsServer\MediaControlHelper\obj\Release\net8.0\win-x64\MediaControlHelper.sourcelink.json

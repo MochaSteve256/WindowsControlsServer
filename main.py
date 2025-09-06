@@ -1,6 +1,7 @@
 import funcs
 
 import flask
+from waitress import serve
 
 app = flask.Flask(__name__)
 
@@ -27,11 +28,20 @@ def music_api():
         return flask.jsonify({"error": "Invalid request"}), 400
     action = flask.request.json["action"] # type: ignore
     if action == "play_pause":
-        funcs.play_pause_music()
+        try:
+            funcs.play_pause_music()
+        except Exception as e:
+            return flask.jsonify({"error": str(e)}), 500
     elif action == "next":
-        funcs.next_track()
+        try:
+            funcs.next_track()
+        except Exception as e:
+            return flask.jsonify({"error": str(e)}), 500
     elif action == "previous":
-        funcs.previous_track()
+        try:
+            funcs.previous_track()
+        except Exception as e:
+            return flask.jsonify({"error": str(e)}), 500
     return flask.jsonify({"message": "Music action successful"}), 200
 
 @app.route("/shutdown", methods=["GET"])
@@ -46,4 +56,4 @@ def lock_api():
 
 
 if __name__ == "__main__":
-    app.run(debug=False, host="0.0.0.0", port=8080)
+    serve(app, host="0.0.0.0", port=8080)

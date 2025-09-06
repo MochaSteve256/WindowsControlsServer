@@ -1,10 +1,14 @@
 from __future__ import print_function
-from ctypes import cast, POINTER, windll
+from ctypes import cast, POINTER
+# from ctypes import windll
 from comtypes import CLSCTX_ALL
+import comtypes
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
+import subprocess
+
 import os
-#import keyboard as kb
+# import keyboard as kb
 
 # ---
 # Volume
@@ -25,6 +29,10 @@ def set_master_volume(level):
     # Set master volume
     volume.SetMasterVolumeLevelScalar(level, None) # type: ignore
     print(f"Master volume set to {level * 100:.0f}%")
+    
+    # Explicitly release COM objects
+    interface.Release()
+    comtypes.CoUninitialize()
 
 def get_master_volume():
     """Gets the current system speaker master volume.
@@ -41,33 +49,27 @@ def get_master_volume():
     # Get master volume
     level = volume.GetMasterVolumeLevelScalar() # type: ignore
     print(f"Current master volume: {level * 100:.0f}%")
+    
+    # Explicitly release COM objects
+    interface.Release()
+    comtypes.CoUninitialize()
+
     return level
 
 # ---
 # Music Controls
 # ---
 
-# Windows API function
-SendInput = windll.user32.keybd_event
-
-# Virtual key codes for media keys
-VK_MEDIA_PLAY_PAUSE = 0xB3
-VK_MEDIA_NEXT_TRACK = 0xB0
-VK_MEDIA_PREV_TRACK = 0xB1
-
+path = "MediaControlHelper\\bin\\Release\\net8.0-windows10.0.19041.0\\win-x64\\publish\\MediaControlHelper.exe"
 
 def play_pause_music():
-    #kb.send("play/pause media")
-    SendInput(VK_MEDIA_PLAY_PAUSE, 0, 0, 0)
+    subprocess.run([path, "playpause"], check=True)
 
 def next_track():
-    # kb.send("next track")
-    SendInput(VK_MEDIA_NEXT_TRACK, 0, 0, 0)
+    subprocess.run([path, "next"], check=True)
 
 def previous_track():
-    # kb.send("previous track")
-    SendInput(VK_MEDIA_PREV_TRACK, 0, 0, 0)
-
+    subprocess.run([path, "prev"], check=True)
 
 # ---
 # General
