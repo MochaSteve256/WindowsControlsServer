@@ -15,61 +15,53 @@ import os
 # ---
 
 def set_master_volume(level):
-    """Sets the system speaker master volume.
-    
-    Args:
-        level (float): Volume level (0.0 to 1.0).
-    """
-    devices = AudioUtilities.GetSpeakers()
-    interface = devices.Activate(
-        IAudioEndpointVolume._iid_, CLSCTX_ALL, None
-    )
-    volume = cast(interface, POINTER(IAudioEndpointVolume))
-
-    # Set master volume
-    volume.SetMasterVolumeLevelScalar(level, None) # type: ignore
-    print(f"Master volume set to {level * 100:.0f}%")
-    
-    # Explicitly release COM objects
-    interface.Release()
-    comtypes.CoUninitialize()
+    comtypes.CoInitialize()
+    try:
+        devices = AudioUtilities.GetSpeakers()
+        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        volume = cast(interface, POINTER(IAudioEndpointVolume))
+        volume.SetMasterVolumeLevelScalar(level, None)  # type: ignore
+        print(f"Master volume set to {level * 100:.0f}%")
+        interface.Release()
+    except Exception as e:
+        print(f"Error setting master volume: {e}")
+    finally:
+        comtypes.CoUninitialize()
 
 def get_master_volume():
-    """Gets the current system speaker master volume.
-    
-    Returns:
-        float: Volume level (0.0 to 1.0).
-    """
-    devices = AudioUtilities.GetSpeakers()
-    interface = devices.Activate(
-        IAudioEndpointVolume._iid_, CLSCTX_ALL, None
-    )
-    volume = cast(interface, POINTER(IAudioEndpointVolume))
-
-    # Get master volume
-    level = volume.GetMasterVolumeLevelScalar() # type: ignore
-    print(f"Current master volume: {level * 100:.0f}%")
-    
-    # Explicitly release COM objects
-    interface.Release()
-    comtypes.CoUninitialize()
-
-    return level
+    comtypes.CoInitialize()  # Initialize COM in this thread
+    try:
+        devices = AudioUtilities.GetSpeakers()
+        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        volume = cast(interface, POINTER(IAudioEndpointVolume))
+        return volume.GetMasterVolumeLevelScalar()  # type: ignore
+        interface.Release()
+    finally:
+        comtypes.CoUninitialize()  # Cleanup COM
 
 # ---
 # Music Controls
 # ---
 
-path = "MediaControlHelper\\bin\\Release\\net8.0-windows10.0.19041.0\\win-x64\\publish\\MediaControlHelper.exe"
+path = r"C:\Users\Adrian\Desktop\Code\WindowsControlsServer\MediaControlHelper\bin\Release\net8.0-windows10.0.19041.0\win-x64\publish\MediaControlHelper.exe"
+def run_hidden_command(cmd: str):
+    subprocess.run(
+        [path, cmd],
+        check=True,
+        creationflags=subprocess.CREATE_NO_WINDOW  # <-- hides the console window
+    )
+
 
 def play_pause_music():
-    subprocess.run([path, "playpause"], check=True)
+    run_hidden_command("playpause")
 
 def next_track():
-    subprocess.run([path, "next"], check=True)
+    run_hidden_command("next")
 
 def previous_track():
-    subprocess.run([path, "prev"], check=True)
+    run_hidden_command("prev")
+    
+
 
 # ---
 # General
