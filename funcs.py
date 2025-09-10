@@ -1,49 +1,55 @@
 from __future__ import print_function
 from ctypes import cast, POINTER
-# from ctypes import windll
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
-import subprocess
 
+import threading
 import os
 import keyboard
+import time
+
+time.sleep(1)
 
 # ---
 # Volume
 # ---
 
-def set_master_volume(level):
-    try:
-        devices = AudioUtilities.GetSpeakers()
-        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-        volume = cast(interface, POINTER(IAudioEndpointVolume))
-        volume.SetMasterVolumeLevelScalar(level, None)  # type: ignore
-        print(f"Master volume set to {level * 100:.0f}%")
-    except Exception as e:
-        print(f"Error setting master volume: {e}")
+_volume_lock = threading.Lock()
 
-def get_master_volume():
-    try:
-        devices = AudioUtilities.GetSpeakers()
-        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-        volume = cast(interface, POINTER(IAudioEndpointVolume))
-        return volume.GetMasterVolumeLevelScalar()  # type: ignore
-    except Exception as e:
-        print(f"Error getting master volume: {e}")
+def set_master_volume(level: float):
+    with _volume_lock:
+        try:
+            devices = AudioUtilities.GetSpeakers()
+            interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+            volume = cast(interface, POINTER(IAudioEndpointVolume))
+            volume.SetMasterVolumeLevelScalar(level, None)  # type: ignore
+            # Explicitly release COM objects
+            interface = None
+            devices = None
+            print(f"Master volume set to {level*100:.0f}%")
+        except Exception as e:
+            print(f"[Volume Error] {e}")
+
+def get_master_volume() -> float:
+    with _volume_lock:
+        try:
+            devices = AudioUtilities.GetSpeakers()
+            interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+            volume = cast(interface, POINTER(IAudioEndpointVolume))
+            level = volume.GetMasterVolumeLevelScalar()  # type: ignore
+            # Explicitly release COM objects
+            interface = None
+            devices = None
+            return level
+        except Exception as e:
+            print(f"[Volume Error] {e}")
+            return -1.0
+
 
 # ---
 # Music Controls
 # ---
-
-path = r"C:\Users\Adrian\Desktop\Code\WindowsControlsServer\MediaControlHelper\bin\Release\net8.0-windows10.0.19041.0\win-x64\publish\MediaControlHelper.exe"
-def run_hidden_command(cmd: str):
-    subprocess.run(
-        [path, cmd],
-        check=True,
-        creationflags=subprocess.CREATE_NO_WINDOW  # <-- hides the console window
-    )
-
 
 def play_pause_music():
     keyboard.send('play/pause media')
