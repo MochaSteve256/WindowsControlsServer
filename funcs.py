@@ -2,42 +2,35 @@ from __future__ import print_function
 from ctypes import cast, POINTER
 # from ctypes import windll
 from comtypes import CLSCTX_ALL
-import comtypes
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
 import subprocess
 
 import os
-# import keyboard as kb
+import keyboard
 
 # ---
 # Volume
 # ---
 
 def set_master_volume(level):
-    comtypes.CoInitialize()
     try:
         devices = AudioUtilities.GetSpeakers()
         interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         volume = cast(interface, POINTER(IAudioEndpointVolume))
         volume.SetMasterVolumeLevelScalar(level, None)  # type: ignore
         print(f"Master volume set to {level * 100:.0f}%")
-        interface.Release()
     except Exception as e:
         print(f"Error setting master volume: {e}")
-    finally:
-        comtypes.CoUninitialize()
 
 def get_master_volume():
-    comtypes.CoInitialize()  # Initialize COM in this thread
     try:
         devices = AudioUtilities.GetSpeakers()
         interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         volume = cast(interface, POINTER(IAudioEndpointVolume))
         return volume.GetMasterVolumeLevelScalar()  # type: ignore
-        interface.Release()
-    finally:
-        comtypes.CoUninitialize()  # Cleanup COM
+    except Exception as e:
+        print(f"Error getting master volume: {e}")
 
 # ---
 # Music Controls
@@ -53,14 +46,13 @@ def run_hidden_command(cmd: str):
 
 
 def play_pause_music():
-    run_hidden_command("playpause")
+    keyboard.send('play/pause media')
 
 def next_track():
-    run_hidden_command("next")
+    keyboard.send('next track')
 
 def previous_track():
-    run_hidden_command("prev")
-    
+    keyboard.send('previous track')
 
 
 # ---
@@ -72,8 +64,6 @@ def lock_screen():
 
 def shutdown():
     os.system("shutdown /s /t 0")
-
-
 
 
 if __name__ == "__main__":

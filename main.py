@@ -1,4 +1,4 @@
-import funcs
+import funcs as funcs
 
 import flask
 from waitress import serve
