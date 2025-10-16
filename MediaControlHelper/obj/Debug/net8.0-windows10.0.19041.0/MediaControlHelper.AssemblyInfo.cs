@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MediaControlHelper")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a2a776049c3f8e460f62b50a15727274cb1955a0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+14e8bfecaab3e63829c5f278ff69362c5ad8ece6")]
 [assembly: System.Reflection.AssemblyProductAttribute("MediaControlHelper")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MediaControlHelper")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

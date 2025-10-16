@@ -1,4 +1,4 @@
-import funcs
+import funcs as funcs
 
 import flask
 from waitress import serve
@@ -56,4 +56,5 @@ def lock_api():
 
 
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port=8080)
+    #serve(app, host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=8080, debug=True)
