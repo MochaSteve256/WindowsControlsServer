@@ -11,6 +11,8 @@ def run_hidden_command(*args):
         [path, *args],
         capture_output=True,
         text=True,
+        creationflags=subprocess.CREATE_NO_WINDOW  # <-- hides the console window
+
     )
     # Combine stdout + stderr, strip trailing newlines
     output = (result.stdout or "") + (result.stderr or "")
